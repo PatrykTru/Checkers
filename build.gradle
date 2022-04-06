@@ -4,13 +4,13 @@ plugins {
 }
 
 javafx {
-    version = "11.0.2"
+    version = "17.0.2"
     modules = [ 'javafx.controls' ]
 }
 
 group 'com.kodilla'
 version '1.0-SNAPSHOT'
-mainClassName =
+mainClassName = 'com.kodilla.checkers.CheckersGame'
 
 repositories {
     mavenCentral()
