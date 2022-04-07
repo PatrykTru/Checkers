@@ -1,77 +1,81 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.kodilla.checkers;
 
-import javafx.scene.layout.StackPane;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 
-import static com.kodilla.checkers.CheckersGame.TITLE_SIZE;
-public class Piece extends StackPane {
 
-    private PieceType type;
+public class Piece {
+    private boolean empty, color, crown; // for color, true means black
 
-    private double mouseX, mouseY;
-    private double oldX, oldY;
-
-    public double getOldX() {
-        return oldX;
+    public Piece() {
+        empty = true;
+        color = false;
+        crown = false;
     }
 
-    public double getOldY() {
-        return oldY;
+    public Piece(Piece piece) {
+        empty = piece.empty;
+        color = piece.color;
+        crown = piece.crown;
     }
 
-    public PieceType getType() {
-        return type;
+    public boolean isEmpty() {
+        return empty;
     }
 
-    public Piece(PieceType type, int x, int y) {
-        this.type = type;
-
-        move(x , y );
-
-        Ellipse bg = new Ellipse(TITLE_SIZE * 0.3125, TITLE_SIZE * 0.26);
-        bg.setFill(type == PieceType.BLACK
-                ? Color.BLACK : Color.WHITE);
-
-        bg.setStroke(Color.GRAY);
-        bg.setStrokeWidth(TITLE_SIZE * 0.03);
-
-        bg.setTranslateX((TITLE_SIZE - TITLE_SIZE * 0.3125 * 2) / 2);
-        bg.setTranslateY((TITLE_SIZE - TITLE_SIZE * 0.26 * 2) / 2 + TITLE_SIZE * 0.07);
-
-        Ellipse ellipse = new Ellipse(TITLE_SIZE * 0.3125, TITLE_SIZE * 0.26);
-        ellipse.setFill(type == PieceType.BLACK
-                ? Color.BLACK : Color.WHITE);
-
-        ellipse.setStroke(Color.GRAY);
-        ellipse.setStrokeWidth(TITLE_SIZE * 0.03);
-
-        ellipse.setTranslateX((TITLE_SIZE - TITLE_SIZE * 0.3125 * 2) / 2);
-        ellipse.setTranslateY((TITLE_SIZE - TITLE_SIZE * 0.26 * 2) / 2);
-
-
-        getChildren().addAll(bg, ellipse);
-
-        if(type.canMove) {
-            setOnMousePressed(e -> {
-                mouseX = e.getSceneX();
-                mouseY = e.getSceneY();
-            });
-
-
-            setOnMouseDragged(e -> {
-                relocate(e.getSceneX() - mouseX + oldX, e.getSceneY() - mouseY + oldY);
-            });
-        }
-
-
+    public boolean isCrown() {
+        return crown;
     }
-    public void move(int x ,  int y){
-        oldX = x* TITLE_SIZE;
-        oldY = y * TITLE_SIZE;
-        relocate(oldX,oldY);
+
+    public boolean color() {
+        return color;
     }
-    public void abortMove(){
-        relocate(oldX,oldY);
+
+    public void setWhite() {
+        empty = false;
+        crown = false;
+        color = false;
+    }
+
+    public void setBlack() {
+        empty = false;
+        crown = false;
+        color = true;
+    }
+
+    public void setCrown() {
+        crown = true;
+    }
+
+    public void setEmpty() {
+        empty = true;
+    }
+
+    public void draw(GraphicsContext gc, double x, double y, double margin,
+                     double unitLength) {
+        if (empty)
+            return;
+
+        if (color)
+            gc.setFill(Color.BLACK);
+        else gc.setFill(Color.WHITE);
+
+        gc.fillOval(x + margin * unitLength, y + margin * unitLength,
+                (1 - 2 * margin) * unitLength, (1 - 2 * margin) * unitLength);
+
+        gc.setStroke(Color.BLACK);
+        gc.strokeOval(x + margin * unitLength, y + margin * unitLength,
+                (1 - 2 * margin) * unitLength, (1 - 2 * margin) * unitLength);
+
+        if (color)
+            gc.setStroke(Color.WHITE);
+        if (crown)
+            gc.strokeOval(x + 2*margin*unitLength, y + 2*margin*unitLength,
+                    (1 - 4*margin) * unitLength, (1 - 4*margin) * unitLength);
     }
 }
